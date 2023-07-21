@@ -10,10 +10,14 @@ const io = socketio(server); // Attach Socket.IO to the HTTP server to enable We
 
 io.on("connection", (socket) => {
   console.log("a user connected", socket.id); // Log when a user connects and print their socket ID
+
+  socket.on("join_room", (roomid) => {
+    socket.join(roomid);
+  });
+
   socket.on("msg_send", (data) => {
-    console.log(data);
-    io.emit("msg_rcvd", data);
-    // socket.emit("msg_rcvd", data); // emit to yourself only
+    io.to(data.roomid).emit("msg_rcvd", data);
+    // socket.emit("msg _rcvd", data); // emit to yourself only
     // socket.broadcast.emit("msg_rcvd", data);
   });
 });

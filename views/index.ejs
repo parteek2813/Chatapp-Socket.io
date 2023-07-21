@@ -7,6 +7,8 @@
   </head>
   <body>
     <h1>Chatbox</h1>
+    <button id="startchat" data-roomid="<%= id %>">Start Chat</button>
+    <input type="text" id="username" placeholder="username ..." />
     <input type="text" id="newmsg" placeholder="message..." />
     <button id="btn">Send</button>
 
@@ -18,15 +20,24 @@
       // call the io function and get the new socket object
       var socket = io();
 
+      let startchat = document.getElementById("startchat");
       let btn = document.getElementById("btn");
+      let username = document.getElementById("username");
       let inputMsg = document.getElementById("newmsg");
       let msgList = document.getElementById("msglist");
 
       console.log(inputMsg.value);
 
-      btn.onclick = function () {
+      btn.onclick = function exec() {
         socket.emit("msg_send", {
           msg: inputMsg.value,
+          roomid: startchat.getAttribute("data-roomid"),
+        });
+      };
+      //   onclick of function get the roomId and send to the backend too
+      startchat.onclick = function exec() {
+        socket.emit("join_room", {
+          roomid: startchat.getAttribute("data-roomid"),
         });
       };
 
