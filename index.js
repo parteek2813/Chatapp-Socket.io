@@ -9,19 +9,22 @@ const server = http.createServer(app); // Create an HTTP server using the Expres
 const io = socketio(server); // Attach Socket.IO to the HTTP server to enable WebSocket functionality
 
 io.on("connection", (socket) => {
-  // console.log("a user connected", socket.id); // Log when a user connects and print their socket ID
-  // socket.on("msg_send", (data) => {
-  //   console.log(data);
-  // io.emit("msg_rcvd", data);
-  // socket.emit("msg_rcvd", data); // emit to yourself only
-  // socket.broadcast.emit("msg_rcvd", data); emit to all execept urself
-  // });
+  console.log("a user connected", socket.id); // Log when a user connects and print their socket ID
+  socket.on("msg_send", (data) => {
+    console.log(data);
+    io.emit("msg_rcvd", data);
+    // socket.emit("msg_rcvd", data); // emit to yourself only
+    // socket.broadcast.emit("msg_rcvd", data);
+  });
 });
 
 app.use("/", express.static(__dirname + "/public"));
 
 app.get("/chat/:roomid", (req, res) => {
-  res.render("index");
+  res.render("index", {
+    name: "Parteek",
+    id: req.params.roomid,
+  });
 });
 
 app.set("view engine", "ejs");
