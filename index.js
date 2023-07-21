@@ -1,9 +1,32 @@
 const express = require("express");
-const app = express();
+const http = require("http");
+const socketio = require("socket.io");
 
-app.use("/", express.static(__dirname + "/public"));
+const app = express(); // Create an instance of the Express application
+const server = http.createServer(app); // Create an HTTP server using the Express app
+const io = socketio(server); // Attach Socket.IO to the HTTP server to enable WebSocket functionality
+
+io.on("connection", (socket) => {
+  console.log("a user connected", socket.id); // Log when a user connects and print their socket ID
+
+  socket.on("From_client", () => {
+    console.log("from client i get printed");
+  });
+
+  setInterval(() => {
+    socket.emit("From_server");
+  }, 2000);
+});
+
+app.use("/", express.static(__dirname + "/public")); // Serve static files from the "public" directory for routes matching "/"
+
+/* Another way of rendering the html page */
+
+// app.get("/", (req, res) => {
+//   res.sendFile(__dirname + "/public/index.html"); // Send the "index.html" file when a GET request is made to the root URL "/"
+// });
 
 const PORT = 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("Server listening on port", PORT);
 });
